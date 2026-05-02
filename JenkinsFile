@@ -9,5 +9,17 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/Aryan-Dot-Dev/Devops_Assignment.git'
             }
         }
+
+        stage('Unit Tests') {
+            steps {
+                sh 'cd app && bun test tests/unit'
+            }
+        }
+
+        stage('Integration Tests') {
+            steps {
+                sh 'cd app && bun test tests/integration'
+            }
+        }
     }
 }
