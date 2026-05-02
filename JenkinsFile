@@ -8,8 +8,4 @@ pipeline {
             }
         }
     }
-
-    setup {
-        echo "Building branch: ${env.BRANCH_NAME}"
-    }
 }
