@@ -1,12 +1,10 @@
 pipeline {
     agent any
-    tools {
-        nodejs 'NodeJS'
-    }
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/Aryan-Dot-Dev/Devops_Assignment.git'
+                git url: 'https://github.com/Aryan-Dot-Dev/Devops_Assignment.git',
+                    branch: "${env.BRANCH_NAME}"
             }
         }
 
