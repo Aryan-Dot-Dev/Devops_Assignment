@@ -1,14 +1,30 @@
 pipeline {
-    agent {
-        docker {
-            image 'oven/bun:latest'
-        }
-    }
+    agent zny
     stages {
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/Aryan-Dot-Dev/Devops_Assignment.git',
                     branch: "${env.BRANCH_NAME}"
+            }
+        }
+
+        stage('Install Bun') {
+            steps {
+                sh '''
+                curl -fsSL https://bun.sh/install | bash
+                export PATH="$HOME/.bun/bin:$PATH"
+                bun --version
+                '''
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                export PATH="$HOME/.bun/bin:$PATH"
+                cd app
+                bun install
+                '''
             }
         }
 
