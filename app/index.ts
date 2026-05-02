@@ -47,20 +47,20 @@ const server = Bun.serve({
     }
 
     // Create user
-    if (path === "/api/users" && method === "POST") {
-      return req.json().then((data: any) => {
-        const newUser: User = {
-          id: Math.max(...users.map((u) => u.id), 0) + 1,
-          name: data.name,
-          email: data.email,
-        };
-        users.push(newUser);
-        return new Response(JSON.stringify(newUser), {
-          status: 201,
-          headers: { "Content-Type": "application/json" },
-        });
-      });
-    }
+    // if (path === "/api/users" && method === "POST") {
+    //   return req.json().then((data: any) => {
+    //     const newUser: User = {
+    //       id: Math.max(...users.map((u) => u.id), 0) + 1,
+    //       name: data.name,
+    //       email: data.email,
+    //     };
+    //     users.push(newUser);
+    //     return new Response(JSON.stringify(newUser), {
+    //       status: 201,
+    //       headers: { "Content-Type": "application/json" },
+    //     });
+    //   });
+    // }
 
     // Root endpoint
     if (path === "/" && method === "GET") {
