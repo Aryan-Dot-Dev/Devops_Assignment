@@ -1,10 +1,13 @@
 {
-  "name": ".",
-  "module": ".",
+  "name": "app",
+  "module": "index.ts",
   "type": "module",
   "scripts": {
     "start": "bun run index.ts",
-    "dev": "bun --watch run index.ts"
+    "dev": "bun --watch index.ts",
+    "test:unit": "bun test tests/unit",
+    "test:integration": "bun test tests/integration",
+    "test": "bun test"
   },
   "devDependencies": {
     "@types/bun": "latest"

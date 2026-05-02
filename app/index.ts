@@ -1,16 +1,12 @@
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
+import {
+  getAllUsers,
+  getUserById,
+  createUser,
+} from "./src/userService";
 
-const users: User[] = [
-  { id: 1, name: "John Doe", email: "john@example.com" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com" },
-];
-
-const server = Bun.serve({
+export const server = Bun.serve({
   port: 3000,
+  hostname: "127.0.0.1",
   fetch(req) {
     const url = new URL(req.url);
     const path = url.pathname;
@@ -25,7 +21,7 @@ const server = Bun.serve({
 
     // Get all users
     if (path === "/api/users" && method === "GET") {
-      return new Response(JSON.stringify(users), {
+      return new Response(JSON.stringify(getAllUsers()), {
         headers: { "Content-Type": "application/json" },
       });
     }
@@ -34,7 +30,7 @@ const server = Bun.serve({
     const userMatch = path.match(/^\/api\/users\/(\d+)$/);
     if (userMatch && method === "GET") {
       const id = parseInt(userMatch[1]);
-      const user = users.find((u) => u.id === id);
+      const user = getUserById(id);
       if (user) {
         return new Response(JSON.stringify(user), {
           headers: { "Content-Type": "application/json" },
@@ -49,12 +45,7 @@ const server = Bun.serve({
     // Create user
     if (path === "/api/users" && method === "POST") {
       return req.json().then((data: any) => {
-        const newUser: User = {
-          id: Math.max(...users.map((u) => u.id), 0) + 1,
-          name: data.name,
-          email: data.email,
-        };
-        users.push(newUser);
+        const newUser = createUser(data.name, data.email);
         return new Response(JSON.stringify(newUser), {
           status: 201,
           headers: { "Content-Type": "application/json" },
