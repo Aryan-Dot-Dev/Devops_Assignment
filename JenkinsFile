@@ -1,5 +1,10 @@
 pipeline {
     agent any
+
+    environment {
+        PATH = "$HOME/bin:$PATH"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -11,13 +16,13 @@ pipeline {
         stage('Install Bun') {
             steps {
                 sh '''
-                apt-get update
-                apt-get install -y unzip curl
+                mkdir -p $HOME/bin
 
                 curl -L https://github.com/oven-sh/bun/releases/latest/download/bun-linux-x64.zip -o bun.zip
-                unzip bun.zip
-                mv bun-linux-x64/bun /usr/local/bin/bun
-                chmod +x /usr/local/bin/bun
+                unzip -o bun.zip
+
+                mv bun-linux-x64/bun $HOME/bin/bun
+                chmod +x $HOME/bin/bun
 
                 bun --version
                 '''
@@ -27,7 +32,6 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                export PATH="$HOME/.bun/bin:$PATH"
                 cd app
                 bun install
                 '''
@@ -36,13 +40,19 @@ pipeline {
 
         stage('Unit Tests') {
             steps {
-                sh 'cd app && bun test tests/unit'
+                sh '''
+                cd app
+                bun test tests/unit
+                '''
             }
         }
 
         stage('Integration Tests') {
             steps {
-                sh 'cd app && bun test tests/integration'
+                sh '''
+                cd app
+                bun test tests/integration
+                '''
             }
         }
     }
