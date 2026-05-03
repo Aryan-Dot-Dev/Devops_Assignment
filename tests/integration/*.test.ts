@@ -1,5 +1,5 @@
 import { test, expect, afterAll } from "bun:test";
-import { server } from "../../app/src/index";
+import { server } from "../../app/index";
 
 const baseUrl = `http://localhost:${server.port}`;
 
