@@ -41,7 +41,8 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 sh '''
-                bun test tests/unit
+                cd app
+                bun test ../tests/unit
                 '''
             }
         }
@@ -49,7 +50,29 @@ pipeline {
         stage('Integration Tests') {
             steps {
                 sh '''
-                bun test tests/integration
+                cd app
+
+                # Start Auth Service in background
+                bun run auth/index.ts > /tmp/auth.log 2>&1 &
+                AUTH_PID=$!
+                echo "Auth service started with PID: $AUTH_PID"
+                sleep 2
+
+                # Start User Service in background
+                bun run index.ts > /tmp/user.log 2>&1 &
+                USER_PID=$!
+                echo "User service started with PID: $USER_PID"
+                sleep 2
+
+                # Run integration tests
+                bun test ../tests/integration || TEST_RESULT=$?
+
+                # Cleanup services
+                kill $AUTH_PID $USER_PID 2>/dev/null || true
+                wait $AUTH_PID $USER_PID 2>/dev/null || true
+
+                # Exit with test result
+                exit ${TEST_RESULT:-0}
                 '''
             }
         }

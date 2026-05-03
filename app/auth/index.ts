@@ -85,4 +85,4 @@ Bun.serve({
   },
 });
 
-console.log("✓ Auth Service running on http://127.0.0.1:4000");
+console.log("✓ Auth Service running on http://0.0.0.0:4000");
