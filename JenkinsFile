@@ -57,7 +57,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                    docker build -t suspiciousdude/final-devops:latest .
+                    docker build -f DockerFile -t suspiciousdude/final-devops:latest .
                 '''
             }
         }
