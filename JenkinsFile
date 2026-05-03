@@ -80,10 +80,9 @@ pipeline {
                 }
             }
         }
-
-        stage('Build User Image') {
+        stage('Push Auth Image') {
             steps {
-                sh 'docker build -t suspiciousdude/user-service:latest -f DockerFile.user .'
+                sh 'docker push suspiciousdude/auth-service:latest'
             }
         }
 
