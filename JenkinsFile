@@ -113,21 +113,20 @@ pipeline {
                 '''
             }
         }
+    }
 
-        stage('Rollback') {
-            when { failure() }
-            steps {
-                sh '''
-                kubectl patch service app-service -p '{
-                "spec": {
-                    "selector": {
-                    "app": "myapp",
-                    "version": "blue"
-                    }
+    post {
+        failure {
+            sh '''
+            kubectl patch service app-service -p '{
+            "spec": {
+                "selector": {
+                "app": "myapp",
+                "version": "blue"
                 }
-                }'
-                '''
             }
+            }'
+            '''
         }
     }
 }
