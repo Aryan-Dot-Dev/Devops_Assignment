@@ -92,36 +92,6 @@ pipeline {
             }
         }
 
-        stage('Deploy Blue (initial)') {
-            steps {
-                sh '''
-                    kubectl apply -f k8s/deployment-blue.yaml
-                    kubectl apply -f k8s/service.yaml
-                '''
-            }
-        }
-
-        stage('Deploy Green') {
-            steps {
-                sh 'kubectl apply -f k8s/deployment-green.yaml'
-            }
-        }
-
-        stage('Switch to Green') {
-            steps {
-                sh '''
-                kubectl patch service app-service -p '{
-                "spec": {
-                    "selector": {
-                    "app": "myapp",
-                    "version": "green"
-                    }
-                }
-                }'
-                '''
-            }
-        }
-
         stage('Deploy Microservices') {
             steps {
                 sh '''
