@@ -54,13 +54,18 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
+        stage('Build Auth Image') {
             steps {
-                sh '''
-                    docker build -f DockerFile -t suspiciousdude/final-devops:latest .
-                '''
+                sh 'docker build -t suspiciousdude/auth-service:latest -f DockerFile.auth .'
             }
         }
+
+        stage('Build User Image') {
+            steps {
+                sh 'docker build -t suspiciousdude/user-service:latest -f DockerFile.user .'
+            }
+        }
+
 
         stage('Docker Login') {
              steps {
@@ -76,11 +81,15 @@ pipeline {
             }
         }
 
-        stage('Docker Push') {
+        stage('Build User Image') {
             steps {
-                sh '''
-                    docker push suspiciousdude/final-devops:latest
-                '''
+                sh 'docker build -t suspiciousdude/user-service:latest -f DockerFile.user .'
+            }
+        }
+
+        stage('Push User Image') {
+            steps {
+                sh 'docker push suspiciousdude/user-service:latest'
             }
         }
 
@@ -112,6 +121,17 @@ pipeline {
                 }'
                 '''
             }
+        }
+    }
+
+    stage('Deploy Microservices') {
+        steps {
+            sh '''
+            kubectl apply -f k8s/auth-deployment.yaml
+            kubectl apply -f k8s/auth-service.yaml
+            kubectl apply -f k8s/user-deployment.yaml
+            kubectl apply -f k8s/user-service.yaml
+            '''
         }
     }
 

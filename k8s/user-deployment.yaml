@@ -1,21 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-green
+  name: user-service
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: myapp
-      version: green
+      app: user
   template:
     metadata:
       labels:
-        app: myapp
-        version: green
+        app: user
     spec:
       containers:
-      - name: app
-        image: suspiciousdude/final-devops:latest
+      - name: user
+        image: suspiciousdude/user-service:latest
         ports:
         - containerPort: 3000

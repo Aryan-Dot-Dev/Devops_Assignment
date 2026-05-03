@@ -1,0 +1,69 @@
+### Base URLs
+
+@auth = http://127.0.0.1:4000
+@user = http://localhost:3000
+
+---
+
+### 1. Health Check
+
+GET {{user}}/health
+
+---
+
+### 2. Login → Get JWT Token
+
+POST {{auth}}/login
+Content-Type: application/json
+
+{
+  "username": "testuser"
+}
+
+---
+
+### 3. Save token manually from above response
+
+# Replace YOUR_TOKEN_HERE with actual token returned from login
+---
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoidGVzdHVzZXIiLCJpYXQiOjE3Nzc3ODU2NzAsImV4cCI6MTc3Nzc4OTI3MH0.IIKI_0qfENcrO-8RvzWZ7793rr0i4oEbd5ySSiSlFxE
+
+---
+
+### 4. Get All Users (Authorized)
+
+GET {{user}}/api/users
+Authorization: Bearer {{token}}
+
+---
+
+### 5. Get User by ID (Authorized)
+
+GET {{user}}/api/users/1
+Authorization: Bearer {{token}}
+
+---
+
+### 6. Create User (Authorized)
+
+POST {{user}}/api/users
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Alice",
+  "email": "alice@example.com"
+}
+
+---
+
+### 7. Unauthorized Request (No Token)
+
+GET {{user}}/api/users
+
+---
+
+### 8. Invalid Token Test
+
+GET {{user}}/api/users
+Authorization: Bearer invalidtoken

@@ -1,3 +1,7 @@
+import { verify } from "jsonwebtoken";
+
+const SECRET = "mysecret";
+
 import {
   getAllUsers,
   getUserById,
@@ -12,11 +16,31 @@ export const server = Bun.serve({
     const path = url.pathname;
     const method = req.method;
 
-    // Health check
+    // Health check (public)
     if (path === "/health" && method === "GET") {
       return new Response(JSON.stringify({ status: "ok" }), {
         headers: { "Content-Type": "application/json" },
       });
+    }
+
+    // JWT Authentication middleware for /api routes
+    if (path.startsWith("/api")) {
+      const auth = req.headers.get("authorization");
+      if (!auth) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      try {
+        const token = auth.split(" ")[1];
+        verify(token, SECRET);
+      } catch {
+        return new Response(JSON.stringify({ error: "Invalid token" }), {
+          status: 403,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
 
     // Get all users
@@ -57,12 +81,14 @@ export const server = Bun.serve({
     if (path === "/" && method === "GET") {
       return new Response(
         JSON.stringify({
-          message: "Welcome to Bun API",
+          message: "Welcome to Bun User Service",
+          info: "All /api endpoints require JWT authentication",
+          auth: "Get token from Auth Service at http://127.0.0.1:4000/login",
           endpoints: {
-            health: "GET /health",
-            users: "GET /api/users",
-            userById: "GET /api/users/:id",
-            createUser: "POST /api/users",
+            health: "GET /health (no auth required)",
+            users: "GET /api/users (auth required)",
+            userById: "GET /api/users/:id (auth required)",
+            createUser: "POST /api/users (auth required)",
           },
         }),
         {

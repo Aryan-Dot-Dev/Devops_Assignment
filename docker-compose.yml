@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: DockerFile.auth
+    container_name: bun-auth-service
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - bun-network
+
+  user:
+    build:
+      context: .
+      dockerfile: DockerFile.user
+    container_name: bun-user-service
+    ports:
+      - "3000:3000"
+    depends_on:
+      auth:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - bun-network
+    
+
+networks:
+  bun-network:
+    driver: bridge
