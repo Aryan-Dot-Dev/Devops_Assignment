@@ -122,16 +122,16 @@ pipeline {
                 '''
             }
         }
-    }
 
-    stage('Deploy Microservices') {
-        steps {
-            sh '''
-            kubectl apply -f k8s/auth-deployment.yaml
-            kubectl apply -f k8s/auth-service.yaml
-            kubectl apply -f k8s/user-deployment.yaml
-            kubectl apply -f k8s/user-service.yaml
-            '''
+        stage('Deploy Microservices') {
+            steps {
+                sh '''
+                kubectl apply -f k8s/auth-deployment.yaml
+                kubectl apply -f k8s/auth-service.yaml
+                kubectl apply -f k8s/user-deployment.yaml
+                kubectl apply -f k8s/user-service.yaml
+                '''
+            }
         }
     }
 
