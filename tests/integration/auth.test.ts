@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 
-const authBaseUrl = "http://127.0.0.1:4000";
+const authBaseUrl = "http://localhost:4000";
 
 // Auth Service Tests
 test("Auth: GET /health returns ok status", async () => {
