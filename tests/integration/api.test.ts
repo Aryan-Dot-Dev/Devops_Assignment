@@ -1,8 +1,8 @@
 import { test, expect, beforeAll, afterAll } from "bun:test";
-import { server } from "../../app/index";
 
 let token: string;
-const baseUrl = `http://localhost:${server.port}`;
+let authAvailable = true;
+const baseUrl = `http://localhost:3000`; // Connect to already-running server
 
 beforeAll(async () => {
   // Get a valid token from auth service before running tests
@@ -23,7 +23,7 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
-  server.stop();
+  // Don't stop the server - it's managed by Jenkins
 });
 
 // Public endpoints (no auth required)
